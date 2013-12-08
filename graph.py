@@ -145,10 +145,15 @@ class planet(object):
 			if (flag):
 				self.img.setData ( planet.glyph[  str(self.data[self.glyphOption[self.glyphIndex] ]) + '_active' ] )
 				self.layer = WidgetLayer.Front
+				#self.img.setSize(Vector2( self.iconX+15, self.iconY+15 ))
 			else:
 				self.img.setData ( planet.glyph[ str(self.data[self.glyphOption[self.glyphIndex] ]) ] )
 				self.layer = WidgetLayer.Middle
+				#self.img.setSize(Vector2( self.iconX, self.iconY ))
 			self.highlighted = flag	
+			self.img.setLayer(self.layer)
+			self.img.setSize(Vector2( self.iconX, self.iconY ))
+			self.updatePosition()
 	
 	def setActivate(self, flag):
 		if (flag != self.activated):
@@ -345,7 +350,19 @@ class graph(object):
 			self.panelContent[2].setText('> orbiting period[Days]: ' + period + ' semi-major axis[Earth]: ' + axis + ' eccentricity: ' + eccentricity)
 			self.panelContent[3].setText('> within stellar system: ' + stellar + ' along with other: ' + num + ' planets')
 			self.panelContent[4].setText('> a star of type: ' + type + ' at Temperature:' + temperature) 
-	
+			
+	def setHighlight(self, str):
+		if str != self.highlightStellar:
+			if self.highlightStellar != None:
+				for planetInstance in self.stellarList[self.highlightStellar]:
+					planetInstance.setHighlighted(False)
+			if self.stellarList.get(str):
+				for planetInstance in self.stellarList[str]:
+					planetInstance.setHighlighted(True)
+				self.highlightStellar = str
+			else:
+				self.highlightStellar = None
+			
 	def __init__(self, system, ui, posX, posY, width, height, iconX, iconY):
 		#
 		# planetList[0]  -  planet info
@@ -370,6 +387,7 @@ class graph(object):
 		self.height = height
 		self.iconX = iconX
 		self.iconY = iconY
+		self.highlightStellar = None
 		self.wf = ui.getWidgetFactory()
 		self.graphContainer = Container.create(ContainerLayout.LayoutFree, ui.getUi())
 		self.graphContainer.setMargin(0)
