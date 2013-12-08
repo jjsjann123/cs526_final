@@ -16,32 +16,30 @@ uiroot = ui.getUi()
 hitPlanet = None
 lastHitPlanet = None
 
-x = 0
-y = 0
+x = 100
+y = 10
 width = 400
 height = 400
+iconX = 30
+iconY = 30
 
-planetGraph = buildGraph(systemDic, ui, x, y, width, height)
+planetGraph = buildGraph(systemDic, ui, x, y, width, height, iconX, iconY)
 
 c = planetGraph.container
 img = c.getChildByIndex(0)
 
 list = planetGraph.planetList
 
-
-
 indicator = Image.create(uiroot)
 indicator.setData(loadImage('./dot.png'))
 indicator.setSize(Vector2(15,15))
+indicator.setVisible(False)
 flagZoomInV = False
 flagZoomOutV = False
 flagZoomInH = False
 flagZoomOutH = False
 flagPanH = 0
 flagPanV = 0
-
-
-
 
 cam = getDefaultCamera()
 cam.setControllerEnabled(False)
@@ -263,20 +261,22 @@ def onEvent():
 				pos2d = Vector2(pos[0], pos[1])
 				indicator.setCenter(pos2d)
 				
+				offset = planetGraph.container.getPosition() + planetGraph.graphContainer.getPosition()
 				#if hitPlanet == None:
 				#	oldLength = 100
 				#else:
 				#	oldLength = (pos2d - hitPlanet.img.getPosition()).magnitude
 				if hitPlanet == None:
-					oldLength = 100
+					oldLength = 10000
 				else:
-					oldLength = (pos2d - hitPlanet.img.getCenter()).magnitude()
+					oldLength = (pos2d - hitPlanet.img.getCenter() - offset).magnitude()
 				hit = False
 				for planet in planetGraph.planetList:
 					planetInstance = planetGraph.planetList[planet]
 					if (planetInstance.img.hitTest(pos2d) ):
 						hit = True
-						newLength = (pos2d - planetInstance.img.getCenter()).magnitude()
+						newLength = (pos2d - planetInstance.img.getCenter() - offset).magnitude()
+						print newLength, " ", planetInstance.data['name']
 						if newLength < oldLength:
 							if hitPlanet != None:
 								hitPlanet.setActivate(False)
