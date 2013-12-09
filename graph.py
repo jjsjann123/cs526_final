@@ -16,8 +16,10 @@ class planet(object):
 	maxData = {}
 	axisOption = []
 	
-	iconX = 30
-	iconY = 30
+	incrementIcon = 30
+	
+	iconX = 100
+	iconY = 100
 	containerWidth = 200
 	containerHeight = 200
 	xAxis = 'mass'
@@ -137,18 +139,21 @@ class planet(object):
 		self.layer = None
 		#self.img.setData ( planet.glyph[ str(self.data[self.glyphOption[self.glyphIndex] ]) ] )
 		self.setHighlighted(False)
+		self.img.setData ( planet.glyph[ str(self.data[self.glyphOption[self.glyphIndex] ]) ] )
 		self.setActivate(False)
 		self.updatePosition()
 	
 	def setHighlighted(self, flag):
 		if (flag != self.highlighted):
 			if (flag):
-				self.img.setData ( planet.glyph[  str(self.data[self.glyphOption[self.glyphIndex] ]) + '_active' ] )
+				#self.img.setData ( planet.glyph[  str(self.data[self.glyphOption[self.glyphIndex] ]) + '_active' ] )
 				self.layer = WidgetLayer.Front
+				self.img.setStyleValue('border', '10 #ff0000')
 				#self.img.setSize(Vector2( self.iconX+15, self.iconY+15 ))
 			else:
-				self.img.setData ( planet.glyph[ str(self.data[self.glyphOption[self.glyphIndex] ]) ] )
+				#self.img.setData ( planet.glyph[ str(self.data[self.glyphOption[self.glyphIndex] ]) ] )
 				self.layer = WidgetLayer.Middle
+				self.img.setStyleValue('border', '0 #ff0000')
 				#self.img.setSize(Vector2( self.iconX, self.iconY ))
 			self.highlighted = flag	
 			self.img.setLayer(self.layer)
@@ -158,9 +163,9 @@ class planet(object):
 	def setActivate(self, flag):
 		if (flag != self.activated):
 			if (flag):
-				self.img.setSize (Vector2( self.iconX + 5, self.iconY + 5 ))
+				self.img.setSize (Vector2( self.iconX + self.incrementIcon, self.iconY + self.incrementIcon ))
 				pos = self.img.getPosition()
-				self.img.setPosition(Vector2(-2.5, -2.5) + pos)
+				self.img.setPosition(Vector2(-self.incrementIcon/2, -self.incrementIcon/2) + pos)
 				self.img.setLayer(WidgetLayer.Front)
 				
 				panelSize = self.graph.panel.getSize()
@@ -181,7 +186,7 @@ class planet(object):
 						label.setStyleValue('align', 'middle-left')
 			else:
 				self.img.setSize (Vector2( self.iconX, self.iconY ))
-				self.img.setPosition(Vector2(2.5, 2.5) + self.img.getPosition())
+				self.img.setPosition(Vector2(self.incrementIcon/2, self.incrementIcon/2) + self.img.getPosition())
 				self.img.setLayer(self.layer)
 				self.graph.setPanel(None)
 				
@@ -193,10 +198,7 @@ class graph(object):
 	axisTick = ['period[Days]', 'semimajoraxis[AU]', 'eccentricity', 'mass[Jupiter]', 'radius[Jupiter]', 'distance[AU]']
 	glyphOption = ['discoverymethod']
 	
-	screen_Width = 854
-	screen_Height = 480
-	
-	font = 10
+	font = 14
 	fontDist = 0.25
 	
 	scaleMin = 0.02
